@@ -26,10 +26,13 @@
     --accent: #C8102E;
     --accent-press: #A20C25;
     --accent-soft: rgba(200, 16, 46, .10);
+    --hit: rgba(255, 196, 0, .22);
     --ok: #1E8E4E;
     --warn: #B86E00;
     --overlay: rgba(0, 0, 0, .35);
+    --bar: rgba(249, 249, 249, .88);
     --shadow: 0 1px 2px rgba(0,0,0,.04), 0 6px 20px rgba(0,0,0,.05);
+    --tabbar-h: 58px;
     color-scheme: light dark;
   }
   @media (prefers-color-scheme: dark) {
@@ -43,9 +46,11 @@
       --accent: #F0354A;
       --accent-press: #D02238;
       --accent-soft: rgba(240, 53, 74, .18);
+      --hit: rgba(255, 196, 0, .20);
       --ok: #30D158;
       --warn: #FFB340;
       --overlay: rgba(0, 0, 0, .6);
+      --bar: rgba(22, 22, 24, .88);
       --shadow: none;
     }
   }
@@ -57,26 +62,28 @@
     background: var(--bg);
     color: var(--text);
     font: 17px/1.35 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
     min-height: 100vh;
   }
   button, input { font: inherit; color: inherit; }
   button { cursor: pointer; border: 0; background: none; padding: 0; }
-  .wrap { max-width: 560px; margin: 0 auto; padding: 0 16px 48px; }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 0 16px calc(var(--tabbar-h) + 40px + env(safe-area-inset-bottom)); }
 
   /* Nagłówek */
   header { display: flex; align-items: flex-end; justify-content: space-between; padding: 14px 0 12px; }
   h1 { font-size: 32px; line-height: 1.1; font-weight: 700; letter-spacing: -.02em; margin: 0; }
-  .today { color: var(--muted); font-size: 15px; margin-top: 4px; }
+  .subtitle { color: var(--muted); font-size: 15px; margin-top: 4px; }
   .icon-btn {
     width: 40px; height: 40px; border-radius: 20px; display: grid; place-items: center;
-    background: var(--card); box-shadow: var(--shadow); color: var(--accent);
+    background: var(--card); box-shadow: var(--shadow); color: var(--accent); flex-shrink: 0;
   }
   .icon-btn svg { width: 22px; height: 22px; }
 
   /* Karta dodawania */
   .card { background: var(--card); border-radius: 16px; box-shadow: var(--shadow); padding: 14px; }
   .lbl { display: block; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 2px 2px 6px; }
+  .lbl .opt { text-transform: none; letter-spacing: 0; font-weight: 400; }
   .field {
     width: 100%; height: 50px; border-radius: 12px; border: 1.5px solid transparent;
     background: var(--field); padding: 0 14px; font-size: 18px; outline: none;
@@ -92,21 +99,20 @@
     background: var(--card); border: 1px solid var(--line); box-shadow: 0 8px 28px rgba(0,0,0,.12);
     position: absolute; left: 0; right: 0; top: 100%; z-index: 20; max-height: 300px; overflow-y: auto;
   }
-  .sugs[hidden] { display: none; }
   .sug { display: flex; align-items: center; min-height: 48px; border-bottom: 1px solid var(--line); }
   .sug:last-child { border-bottom: 0; }
   .sug-pick { flex: 1; text-align: left; padding: 10px 6px 10px 14px; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
   .sug-pick .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .sug-pick mark { background: none; color: var(--accent); font-weight: 600; }
+  .sug-pick mark, .item-name mark { background: none; color: var(--accent); font-weight: 600; }
   .sug-pick .u { color: var(--muted); font-size: 14px; flex-shrink: 0; }
   .sug-del { width: 44px; height: 44px; color: var(--muted); font-size: 22px; line-height: 1; flex-shrink: 0; }
-  .sug-head { padding: 6px 14px 4px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); border-bottom: 1px solid var(--line); }
 
-  .row { display: flex; gap: 10px; margin-top: 12px; align-items: flex-end; }
-  .qty-col { flex: 0 0 38%; }
-  .unit-col { flex: 1; }
-  .seg { display: flex; height: 50px; background: var(--field); border-radius: 12px; padding: 3px; gap: 3px; }
-  .seg button { flex: 1; border-radius: 9px; font-size: 17px; font-weight: 600; color: var(--muted); transition: background .15s, color .15s; }
+  .qty-row { margin-top: 12px; }
+  .qty-row .field { width: 46%; }
+  .unit-row { margin-top: 12px; }
+  .seg { display: flex; height: 46px; background: var(--field); border-radius: 12px; padding: 3px; gap: 3px; }
+  .seg button { flex: 1; border-radius: 9px; font-size: 16px; font-weight: 600; color: var(--muted); transition: background .15s, color .15s; }
+  .seg button[data-unit=""] { font-weight: 500; }
   .seg button[aria-checked="true"] { background: var(--card); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.14); }
   @media (prefers-color-scheme: dark) { .seg button[aria-checked="true"] { background: #48484A; } }
 
@@ -116,21 +122,13 @@
   }
   .btn-primary:active { background: var(--accent-press); }
 
-  /* Wyszukiwarka */
-  .search { position: relative; margin: 22px 0 6px; }
-  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
-  .search input { width: 100%; height: 42px; border-radius: 11px; border: 0; background: rgba(118,118,128,.12); padding: 0 40px 0 38px; font-size: 17px; outline: none; -webkit-appearance: none; }
-  .search .clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; color: var(--muted); font-size: 20px; }
-  .search .clear[hidden] { display: none; }
-  .search-info { font-size: 14px; color: var(--muted); margin: 8px 4px 0; }
-
-  /* Lista dni */
-  .day { margin-top: 22px; }
+  /* Sekcja dnia (Dziś) */
+  .day { margin-top: 26px; }
   .day-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; margin: 0 4px 8px; }
   .day-title { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
   .day-sub { font-size: 14px; color: var(--muted); margin-top: 1px; }
-  .day-sub .ok { color: var(--ok); }
-  .day-sub .warn { color: var(--warn); }
+  .ok { color: var(--ok); }
+  .warn { color: var(--warn); }
   .day-actions { display: flex; gap: 8px; flex-shrink: 0; }
   .btn-copy {
     height: 36px; padding: 0 14px; border-radius: 18px; background: var(--accent-soft); color: var(--accent);
@@ -144,19 +142,57 @@
   .items { list-style: none; margin: 0; padding: 0; background: var(--card); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
   .item { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 52px; padding: 10px 12px 10px 16px; text-align: left; position: relative; }
   .item:active { background: var(--field); }
+  .item.hit { background: var(--hit); }
   .items li + li .item::before { content: ""; position: absolute; top: 0; left: 16px; right: 0; border-top: 1px solid var(--line); }
   .item-name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
   .item-qty { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .item-qty small { font-weight: 500; color: var(--muted); font-size: 15px; }
   .chev { width: 8px; height: 13px; color: var(--muted); opacity: .6; flex-shrink: 0; }
 
-  .empty { text-align: center; color: var(--muted); padding: 40px 20px; font-size: 16px; }
+  .empty { text-align: center; color: var(--muted); padding: 32px 20px; font-size: 16px; background: var(--card); border-radius: 14px; box-shadow: var(--shadow); }
+  .empty.bare { background: none; box-shadow: none; }
+
+  /* Zakładka Listy */
+  .search { position: relative; margin: 2px 0 6px; }
+  .search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+  .search input { width: 100%; height: 44px; border-radius: 11px; border: 0; background: rgba(118,118,128,.12); padding: 0 40px 0 38px; font-size: 17px; outline: none; -webkit-appearance: none; }
+  .search input::-webkit-search-cancel-button { display: none; }
+  .search .clear { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; color: var(--muted); font-size: 20px; }
+  .search-info { font-size: 14px; color: var(--muted); margin: 8px 4px 0; }
+
+  .month { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 22px 6px 8px; }
+  .lday { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; }
+  .lday + .lday { margin-top: 10px; }
+  .lday-head { width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px 12px 16px; text-align: left; min-height: 60px; }
+  .lday-head:active { background: var(--field); }
+  .lday-main { flex: 1; min-width: 0; }
+  .lday-date { font-size: 17px; font-weight: 600; }
+  .lday-date span { font-weight: 400; color: var(--muted); }
+  .lday-sub { font-size: 14px; color: var(--muted); margin-top: 1px; }
+  .badge { min-width: 28px; height: 24px; padding: 0 8px; border-radius: 12px; background: var(--field); color: var(--muted); font-size: 14px; font-weight: 600; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+  .lday-chev { width: 13px; height: 8px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+  .lday.open .lday-chev { transform: rotate(180deg); }
+  .lday-body { border-top: 1px solid var(--line); }
+  .lday-actions { display: flex; gap: 8px; padding: 10px 14px; justify-content: flex-end; border-bottom: 1px solid var(--line); }
+  .lday .items { border-radius: 0; box-shadow: none; }
   .more { display: block; margin: 22px auto 0; height: 40px; padding: 0 18px; border-radius: 20px; background: var(--card); box-shadow: var(--shadow); color: var(--accent); font-weight: 600; font-size: 15px; }
+
+  /* Pasek zakładek */
+  .tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    display: flex; justify-content: center; gap: 0;
+    background: var(--bar); border-top: 1px solid var(--line);
+    -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .tab { flex: 1; max-width: 200px; height: var(--tabbar-h); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--muted); font-size: 11px; font-weight: 600; position: relative; }
+  .tab svg { width: 26px; height: 26px; }
+  .tab[aria-selected="true"] { color: var(--accent); }
+  .tab .dot { position: absolute; top: 6px; left: calc(50% + 10px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: #fff; font-size: 11px; display: grid; place-items: center; }
 
   /* Arkusze (edycja, menu) */
   .overlay { position: fixed; inset: 0; background: var(--overlay); z-index: 50; display: flex; align-items: flex-end; justify-content: center; opacity: 0; transition: opacity .2s; }
   .overlay.open { opacity: 1; }
-  .overlay[hidden] { display: none; }
   .sheet {
     width: 100%; max-width: 560px; background: var(--bg); border-radius: 18px 18px 0 0;
     padding: 8px 16px calc(20px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform .25s cubic-bezier(.2,.8,.2,1);
@@ -168,8 +204,6 @@
   .sheet-head h2 { font-size: 17px; font-weight: 600; margin: 0; }
   .link-btn { color: var(--accent); font-size: 17px; padding: 6px 2px; }
   .link-btn.strong { font-weight: 600; }
-  .sheet .card + .card { margin-top: 12px; }
-  .field-date { display: flex; align-items: center; }
   .btn-danger { width: 100%; height: 50px; margin-top: 14px; border-radius: 13px; background: var(--card); color: #E5242F; font-weight: 600; box-shadow: var(--shadow); }
   @media (prefers-color-scheme: dark) { .btn-danger { color: #FF453A; } }
 
@@ -181,7 +215,7 @@
 
   /* Komunikat */
   .toast {
-    position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px);
+    position: fixed; left: 50%; bottom: calc(var(--tabbar-h) + 16px + env(safe-area-inset-bottom)); transform: translate(-50%, 20px);
     background: rgba(30,30,32,.94); color: #fff; padding: 12px 18px; border-radius: 14px; font-size: 15px; font-weight: 500;
     opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 80; width: max-content; max-width: calc(100% - 32px); text-align: center;
   }
@@ -193,47 +227,63 @@
 <div class="wrap">
   <header>
     <div>
-      <h1>Przyjęcia towaru</h1>
-      <div class="today" id="todayLabel"></div>
+      <h1 id="pageTitle">Przyjęcia towaru</h1>
+      <div class="subtitle" id="pageSub"></div>
     </div>
     <button class="icon-btn" id="menuBtn" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
     </button>
   </header>
 
-  <form class="card" id="addForm" autocomplete="off" novalidate>
-    <label class="lbl" for="nameInput">Towar</label>
-    <div class="name-wrap">
-      <input class="field" id="nameInput" type="text" placeholder="Wpisz nazwę…" enterkeyhint="next"
-             autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="sentences"
-             role="combobox" aria-autocomplete="list" aria-controls="sugList" aria-expanded="false">
-      <ul class="sugs" id="sugList" role="listbox" hidden></ul>
-    </div>
-    <div class="row">
-      <div class="qty-col">
-        <label class="lbl" for="qtyInput">Ilość</label>
-        <input class="field" id="qtyInput" type="text" inputmode="decimal" placeholder="0" autocomplete="off" enterkeyhint="done">
+  <!-- ZAKŁADKA: DZIŚ -->
+  <section id="tabToday" role="tabpanel" aria-labelledby="tabBtnToday">
+    <form class="card" id="addForm" autocomplete="off" novalidate>
+      <label class="lbl" for="nameInput">Towar</label>
+      <div class="name-wrap">
+        <input class="field" id="nameInput" type="text" placeholder="Wpisz nazwę…" enterkeyhint="next"
+               autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="sentences"
+               role="combobox" aria-autocomplete="list" aria-controls="sugList" aria-expanded="false">
+        <ul class="sugs" id="sugList" role="listbox" hidden></ul>
       </div>
-      <div class="unit-col">
+      <div class="qty-row">
+        <label class="lbl" for="qtyInput">Ilość <span class="opt">(opcjonalnie)</span></label>
+        <input class="field" id="qtyInput" type="text" inputmode="decimal" placeholder="–" autocomplete="off" enterkeyhint="done">
+      </div>
+      <div class="unit-row">
         <span class="lbl" id="unitLbl">Jednostka</span>
         <div class="seg" role="radiogroup" aria-labelledby="unitLbl" id="unitSeg"></div>
       </div>
+      <button class="btn-primary" type="submit">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Dodaj
+      </button>
+    </form>
+
+    <div id="todayList"></div>
+  </section>
+
+  <!-- ZAKŁADKA: LISTY -->
+  <section id="tabLists" role="tabpanel" aria-labelledby="tabBtnLists" hidden>
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="searchInput" type="search" placeholder="Szukaj towaru w listach" aria-label="Szukaj towaru" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
+      <button class="clear" id="searchClear" aria-label="Wyczyść" hidden>✕</button>
     </div>
-    <button class="btn-primary" type="submit">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-      Dodaj
-    </button>
-  </form>
-
-  <div class="search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-    <input id="searchInput" type="search" placeholder="Szukaj pozycji" aria-label="Szukaj pozycji" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
-    <button class="clear" id="searchClear" aria-label="Wyczyść" hidden>✕</button>
-  </div>
-  <div class="search-info" id="searchInfo" hidden></div>
-
-  <main id="list"></main>
+    <div class="search-info" id="searchInfo" hidden></div>
+    <div id="archive"></div>
+  </section>
 </div>
+
+<nav class="tabbar" role="tablist">
+  <button class="tab" id="tabBtnToday" role="tab" aria-selected="true" aria-controls="tabToday" data-tab="today" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>
+    Dziś
+  </button>
+  <button class="tab" id="tabBtnLists" role="tab" aria-selected="false" aria-controls="tabLists" data-tab="lists" type="button">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2.5"/><path d="M8 8.5h8M8 12.5h8M8 16.5h5"/></svg>
+    Listy
+  </button>
+</nav>
 
 <!-- Edycja pozycji -->
 <div class="overlay" id="editOverlay" hidden>
@@ -247,19 +297,17 @@
     <div class="card">
       <label class="lbl" for="editName">Towar</label>
       <input class="field" id="editName" type="text" autocomplete="off" autocorrect="off" spellcheck="false">
-      <div class="row">
-        <div class="qty-col">
-          <label class="lbl" for="editQty">Ilość</label>
-          <input class="field" id="editQty" type="text" inputmode="decimal" autocomplete="off">
-        </div>
-        <div class="unit-col">
-          <span class="lbl" id="editUnitLbl">Jednostka</span>
-          <div class="seg" role="radiogroup" aria-labelledby="editUnitLbl" id="editUnitSeg"></div>
-        </div>
+      <div class="qty-row">
+        <label class="lbl" for="editQty">Ilość <span class="opt">(opcjonalnie)</span></label>
+        <input class="field" id="editQty" type="text" inputmode="decimal" placeholder="–" autocomplete="off">
+      </div>
+      <div class="unit-row">
+        <span class="lbl" id="editUnitLbl">Jednostka</span>
+        <div class="seg" role="radiogroup" aria-labelledby="editUnitLbl" id="editUnitSeg"></div>
       </div>
       <div style="margin-top:12px">
         <label class="lbl" for="editDate">Data odbioru</label>
-        <input class="field field-date" id="editDate" type="date">
+        <input class="field" id="editDate" type="date">
       </div>
     </div>
     <button class="btn-danger" id="editDelete" type="button">Usuń pozycję</button>
@@ -296,8 +344,9 @@
   'use strict';
 
   const UNITS = ['szt.', 'mb', 'kpl.'];
+  const UNIT_OPTS = ['', ...UNITS];           // '' = bez jednostki
   const STORE_KEY = 'przyjecia.v1';
-  const DAYS_STEP = 14;
+  const DAYS_STEP = 30;
   const $ = (id) => document.getElementById(id);
 
   // ---------- Dane ----------
@@ -326,20 +375,23 @@
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
   const pad = (n) => String(n).padStart(2, '0');
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
   function isoOf(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
   const todayISO = () => isoOf(new Date());
+  function dateOf(iso) { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); }
   function fmtDate(iso) { const [y, m, d] = iso.split('-'); return `${d}.${m}.${y}`; }
   function dayName(iso) {
-    const today = todayISO();
     const y = new Date(); y.setDate(y.getDate() - 1);
-    if (iso === today) return 'Dziś';
+    if (iso === todayISO()) return 'Dziś';
     if (iso === isoOf(y)) return 'Wczoraj';
-    const [yy, mm, dd] = iso.split('-').map(Number);
-    const w = new Date(yy, mm - 1, dd).toLocaleDateString('pl-PL', { weekday: 'long' });
-    return w.charAt(0).toUpperCase() + w.slice(1);
+    return cap(dateOf(iso).toLocaleDateString('pl-PL', { weekday: 'long' }));
   }
-  function fmtQty(n) { return String(Number(Number(n).toFixed(3))).replace('.', ','); }
+  function monthName(iso) {
+    return cap(dateOf(iso).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' }));
+  }
+  const hasQty = (q) => q !== null && q !== undefined && q !== '' && Number.isFinite(Number(q));
+  function fmtQty(n) { return hasQty(n) ? String(Number(Number(n).toFixed(3))).replace('.', ',') : ''; }
   function parseQty(s) {
     const v = Number(String(s).replace(/\s/g, '').replace(',', '.'));
     return Number.isFinite(v) && v > 0 ? v : null;
@@ -349,7 +401,18 @@
     const d = n % 10, t = n % 100;
     return d >= 2 && d <= 4 && (t < 12 || t > 14) ? few : many;
   }
+  const pozycji = (n) => `${n} ${plural(n, 'pozycja', 'pozycje', 'pozycji')}`;
   function fmtTime(ts) { const d = new Date(ts); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+  function qtyText(e) {
+    if (!hasQty(e.qty)) return '';
+    return fmtQty(e.qty) + (e.unit ? ' ' + e.unit : '');
+  }
+  function sanitizeQty(input) {
+    let v = input.value.replace('.', ',').replace(/[^\d,]/g, '');
+    const i = v.indexOf(',');
+    if (i >= 0) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/,/g, '');
+    if (v !== input.value) input.value = v;
+  }
 
   // ---------- Pamięć nazw (podpowiedzi) ----------
   function remember(name, unit, bump) {
@@ -357,54 +420,63 @@
     if (!k) return;
     const d = state.dict[k] || { name: name.trim(), count: 0 };
     d.name = name.trim();
-    d.unit = unit;
+    d.unit = unit || '';
     if (bump) d.count = (d.count || 0) + 1;
     d.last = Date.now();
     state.dict[k] = d;
   }
   function findSuggestions(query) {
     const q = norm(query);
-    const all = Object.entries(state.dict);
-    const byUse = (a, b) => (b[1].count || 0) - (a[1].count || 0) || (b[1].last || 0) - (a[1].last || 0);
-    if (!q) return all.sort(byUse).slice(0, 6);
+    if (!q) return [];                       // podpowiedzi dopiero podczas pisania
     const toks = q.split(' ');
-    return all
+    const byUse = (a, b) => (b[1].count || 0) - (a[1].count || 0) || (b[1].last || 0) - (a[1].last || 0);
+    return Object.entries(state.dict)
       .filter(([k]) => k !== q && toks.every((t) => k.includes(t)))
       .map(([k, d]) => [k, d, k.startsWith(q) ? 0 : k.includes(' ' + toks[0]) ? 1 : 2])
       .sort((a, b) => a[2] - b[2] || byUse(a, b))
       .slice(0, 8);
   }
   function highlight(name, query) {
-    const t = norm(query).split(' ')[0];
-    if (!t) return esc(name);
-    const i = fold(name).indexOf(t);
-    if (i < 0) return esc(name);
-    return esc(name.slice(0, i)) + '<mark>' + esc(name.slice(i, i + t.length)) + '</mark>' + esc(name.slice(i + t.length));
+    const toks = norm(query).split(' ').filter(Boolean);
+    if (!toks.length) return esc(name);
+    const f = fold(name);
+    const marks = new Array(name.length).fill(false);
+    for (const t of toks) {
+      let i = f.indexOf(t);
+      while (i >= 0) { for (let j = i; j < i + t.length; j++) marks[j] = true; i = f.indexOf(t, i + t.length); }
+    }
+    let out = '', open = false;
+    for (let i = 0; i < name.length; i++) {
+      if (marks[i] && !open) { out += '<mark>'; open = true; }
+      if (!marks[i] && open) { out += '</mark>'; open = false; }
+      out += esc(name[i]);
+    }
+    return out + (open ? '</mark>' : '');
   }
 
   // ---------- Przełącznik jednostek ----------
   function buildSeg(el, onPick) {
-    el.innerHTML = UNITS.map((u) => `<button type="button" role="radio" aria-checked="false" data-unit="${u}">${u}</button>`).join('');
+    el.innerHTML = UNIT_OPTS.map((u) =>
+      `<button type="button" role="radio" aria-checked="false" data-unit="${u}">${u || 'brak'}</button>`).join('');
     el.addEventListener('click', (e) => {
       const b = e.target.closest('button[data-unit]');
-      if (b) onPick(b.dataset.unit, true);
+      if (b) onPick(b.dataset.unit);
     });
     return (unit) => el.querySelectorAll('button').forEach((b) => b.setAttribute('aria-checked', String(b.dataset.unit === unit)));
   }
 
   // ---------- Formularz dodawania ----------
   const nameInput = $('nameInput'), qtyInput = $('qtyInput'), sugList = $('sugList');
-  let curUnit = 'szt.', unitTouched = false;
-  const paintUnit = buildSeg($('unitSeg'), (u, byUser) => { curUnit = u; if (byUser) unitTouched = true; paintUnit(u); });
+  let curUnit = '', unitTouched = false;
+  const paintUnit = buildSeg($('unitSeg'), (u) => { curUnit = u; unitTouched = true; paintUnit(u); });
   paintUnit(curUnit);
-  function setUnit(u) { if (UNITS.includes(u)) { curUnit = u; paintUnit(u); } }
+  function setUnit(u) { if (UNIT_OPTS.includes(u || '')) { curUnit = u || ''; paintUnit(curUnit); } }
 
   function showSuggestions() {
     const q = nameInput.value;
     const list = findSuggestions(q);
     if (!list.length) return hideSuggestions();
-    const head = norm(q) ? '' : '<li class="sug-head">Najczęściej używane</li>';
-    sugList.innerHTML = head + list.map(([k, d]) => `
+    sugList.innerHTML = list.map(([k, d]) => `
       <li class="sug" role="option">
         <button type="button" class="sug-pick" data-key="${esc(k)}"><span class="n">${highlight(d.name, q)}</span><span class="u">${esc(d.unit || '')}</span></button>
         <button type="button" class="sug-del" data-del="${esc(k)}" aria-label="Usuń podpowiedź ${esc(d.name)}">×</button>
@@ -418,7 +490,6 @@
     nameInput.setAttribute('aria-expanded', 'false');
   }
 
-  nameInput.addEventListener('focus', showSuggestions);
   nameInput.addEventListener('input', () => {
     nameInput.classList.remove('invalid');
     const d = state.dict[norm(nameInput.value)];
@@ -427,7 +498,7 @@
   });
   nameInput.addEventListener('blur', () => setTimeout(hideSuggestions, 150));
   nameInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); qtyInput.focus(); }
+    if (e.key === 'Enter') { e.preventDefault(); hideSuggestions(); qtyInput.focus(); }
     if (e.key === 'Escape') hideSuggestions();
   });
   // Nie zabieraj fokusu z pola przy dotknięciu listy
@@ -437,7 +508,7 @@
     const del = e.target.closest('[data-del]');
     if (del) {
       const d = state.dict[del.dataset.del];
-      if (d && confirm(`Usunąć „${d.name}” z podpowiedzi?\nZapisane pozycje na liście zostaną.`)) {
+      if (d && confirm(`Usunąć „${d.name}” z podpowiedzi?\nZapisane pozycje na listach zostaną.`)) {
         delete state.dict[del.dataset.del];
         save();
         showSuggestions();
@@ -455,127 +526,211 @@
       qtyInput.focus();
     }
   });
-  qtyInput.addEventListener('input', () => {
-    qtyInput.classList.remove('invalid');
-    // tylko cyfry i jeden przecinek
-    let v = qtyInput.value.replace('.', ',').replace(/[^\d,]/g, '');
-    const i = v.indexOf(',');
-    if (i >= 0) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/,/g, '');
-    if (v !== qtyInput.value) qtyInput.value = v;
-  });
+  qtyInput.addEventListener('input', () => { qtyInput.classList.remove('invalid'); sanitizeQty(qtyInput); });
 
   function invalid(el) { el.classList.remove('invalid'); void el.offsetWidth; el.classList.add('invalid'); el.focus(); }
+
+  // Wspólna walidacja ilości i jednostki: jednostka bez ilości nie ma sensu.
+  function readQty(input, unit) {
+    const raw = input.value.trim();
+    if (!raw) {
+      if (unit) { invalid(input); toast('Podaj ilość lub wybierz „brak”'); return undefined; }
+      return null;
+    }
+    const q = parseQty(raw);
+    if (q === null) { invalid(input); toast('Nieprawidłowa ilość'); return undefined; }
+    return q;
+  }
 
   $('addForm').addEventListener('submit', (e) => {
     e.preventDefault();
     const name = nameInput.value.trim().replace(/\s+/g, ' ');
-    const qty = parseQty(qtyInput.value);
     if (!name) { invalid(nameInput); toast('Wpisz nazwę towaru'); return; }
-    if (qty === null) { invalid(qtyInput); toast('Podaj ilość'); return; }
+    const qty = readQty(qtyInput, curUnit);
+    if (qty === undefined) return;
+    const unit = qty === null ? '' : curUnit;
     const now = Date.now();
-    state.entries.push({ id: uid(), name, qty, unit: curUnit, date: todayISO(), created: now, updated: now });
-    remember(name, curUnit, true);
+    const entry = { id: uid(), name, qty, unit, date: todayISO(), created: now, updated: now };
+    state.entries.push(entry);
+    remember(name, unit, true);
     save();
     nameInput.value = '';
     qtyInput.value = '';
     unitTouched = false;
+    setUnit('');
     hideSuggestions();
     render();
-    toast(`Dodano: ${name} – ${fmtQty(qty)} ${curUnit}`);
+    toast(`Dodano: ${name}${qtyText(entry) ? ' – ' + qtyText(entry) : ''}`);
     nameInput.focus();
   });
 
-  // ---------- Lista ----------
-  const listEl = $('list'), searchInput = $('searchInput'), searchClear = $('searchClear'), searchInfo = $('searchInfo');
-  let daysShown = DAYS_STEP;
-
+  // ---------- Wspólne elementy listy ----------
   const icoCopy = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>';
   const icoShare = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>';
   const chev = '<svg class="chev" viewBox="0 0 8 13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m1.5 1.5 5 5-5 5"/></svg>';
+  const chevDown = '<svg class="lday-chev" viewBox="0 0 13 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m1.5 1.5 5 5 5-5"/></svg>';
   const canShare = typeof navigator.share === 'function';
 
   function entriesOfDay(date) {
     return state.entries.filter((e) => e.date === date).sort((a, b) => a.created - b.created);
   }
-
   function copyStatus(date) {
     const c = state.copied[date];
     if (!c || !c.at) return '';
     return slackText(date) === c.text
-      ? ` · <span class="ok">✓ skopiowano ${fmtTime(c.at)}</span>`
-      : ` · <span class="warn">zmiany po skopiowaniu</span>`;
+      ? `<span class="ok">✓ skopiowano ${fmtTime(c.at)}</span>`
+      : `<span class="warn">zmiany po skopiowaniu</span>`;
+  }
+  function actionsHTML(date) {
+    return `<button class="btn-copy" data-copy="${date}" type="button">${icoCopy}<span>Kopiuj</span></button>` +
+      (canShare ? `<button class="btn-share" data-share="${date}" type="button" aria-label="Udostępnij listę z ${fmtDate(date)}">${icoShare}</button>` : '');
+  }
+  function itemsHTML(items, query, hits) {
+    return `<ul class="items">${items.map((e) => {
+      const q = qtyText(e);
+      const hit = hits && hits.has(e.id);
+      return `<li><button class="item${hit ? ' hit' : ''}" type="button" data-id="${e.id}">
+        <span class="item-name">${hit ? highlight(e.name, query) : esc(e.name)}</span>
+        ${q ? `<span class="item-qty">${fmtQty(e.qty)}${e.unit ? ` <small>${esc(e.unit)}</small>` : ''}</span>` : ''}${chev}
+      </button></li>`;
+    }).join('')}</ul>`;
   }
 
-  function render() {
+  // ---------- Zakładka Dziś ----------
+  function renderToday() {
+    const date = todayISO();
+    const items = entriesOfDay(date);
+    const st = copyStatus(date);
+    $('todayList').innerHTML = `
+      <section class="day">
+        <div class="day-head">
+          <div>
+            <div class="day-title">Dzisiejsza lista</div>
+            <div class="day-sub">${fmtDate(date)} · ${pozycji(items.length)}${st ? ' · ' + st : ''}</div>
+          </div>
+          ${items.length ? `<div class="day-actions">${actionsHTML(date)}</div>` : ''}
+        </div>
+        ${items.length ? itemsHTML(items) : '<div class="empty">Dziś nic jeszcze nie przyjęto.</div>'}
+      </section>`;
+  }
+
+  // ---------- Zakładka Listy ----------
+  const archiveEl = $('archive'), searchInput = $('searchInput'), searchClear = $('searchClear'), searchInfo = $('searchInfo');
+  const openDays = new Set();
+  let daysShown = DAYS_STEP;
+
+  function renderLists() {
+    const today = todayISO();
     const q = norm(searchInput.value);
     searchClear.hidden = !searchInput.value;
     const toks = q ? q.split(' ') : [];
-    const match = (e) => toks.every((t) => norm(e.name).includes(t));
 
-    const byDate = new Map();
-    for (const e of state.entries) {
-      if (q && !match(e)) continue;
-      if (!byDate.has(e.date)) byDate.set(e.date, []);
-      byDate.get(e.date).push(e);
-    }
-    const dates = [...byDate.keys()].sort().reverse();
-
+    let dates, hitsByDate = null;
     if (q) {
-      const n = dates.reduce((s, d) => s + byDate.get(d).length, 0);
+      hitsByDate = new Map();
+      for (const e of state.entries) {
+        const n = norm(e.name);
+        if (!toks.every((t) => n.includes(t))) continue;
+        if (!hitsByDate.has(e.date)) hitsByDate.set(e.date, new Set());
+        hitsByDate.get(e.date).add(e.id);
+      }
+      dates = [...hitsByDate.keys()].sort().reverse();
+      const hits = dates.reduce((s, d) => s + hitsByDate.get(d).size, 0);
       searchInfo.hidden = false;
-      searchInfo.textContent = n ? `Znaleziono ${n} ${plural(n, 'pozycję', 'pozycje', 'pozycji')}` : '';
+      searchInfo.textContent = dates.length
+        ? `Znaleziono ${pozycji(hits).replace('pozycja', 'pozycję')} w ${dates.length} ${dates.length === 1 ? 'liście' : 'listach'}`
+        : '';
     } else {
       searchInfo.hidden = true;
+      dates = [...new Set(state.entries.map((e) => e.date))].filter((d) => d !== today).sort().reverse();
     }
 
-    if (!state.entries.length) {
-      listEl.innerHTML = '<div class="empty">Lista jest pusta.<br>Dodaj pierwszy przyjęty towar powyżej.</div>';
-      return;
-    }
     if (!dates.length) {
-      listEl.innerHTML = `<div class="empty">Brak wyników dla „${esc(searchInput.value.trim())}”</div>`;
+      archiveEl.innerHTML = q
+        ? `<div class="empty bare">Nie znaleziono „${esc(searchInput.value.trim())}” w żadnej liście.</div>`
+        : `<div class="empty bare">Brak list z poprzednich dni.<br>Dzisiejsza lista trafi tutaj automatycznie o północy.</div>`;
       return;
     }
 
     const visible = q ? dates : dates.slice(0, daysShown);
-    let html = '';
+    let html = '', month = '';
     for (const date of visible) {
-      const items = byDate.get(date).sort((a, b) => a.created - b.created);
-      const all = q ? entriesOfDay(date) : items;
+      const m = date.slice(0, 7);
+      if (m !== month) {
+        if (month) html += '</div>';
+        month = m;
+        html += `<div class="month">${monthName(date)}</div><div>`;
+      }
+      const items = entriesOfDay(date);
+      const hits = hitsByDate ? hitsByDate.get(date) : null;
+      const open = q ? true : openDays.has(date);
+      const st = copyStatus(date);
+      const sub = hits
+        ? `<span class="warn">${hits.size} ${plural(hits.size, 'trafienie', 'trafienia', 'trafień')}</span>${st ? ' · ' + st : ''}`
+        : (st || 'nie kopiowano');
       html += `
-      <section class="day">
-        <div class="day-head">
-          <div>
-            <div class="day-title">${dayName(date)}</div>
-            <div class="day-sub">${fmtDate(date)} · ${all.length} ${plural(all.length, 'pozycja', 'pozycje', 'pozycji')}${copyStatus(date)}</div>
-          </div>
-          <div class="day-actions">
-            <button class="btn-copy" data-copy="${date}" type="button">${icoCopy}<span>Kopiuj</span></button>
-            ${canShare ? `<button class="btn-share" data-share="${date}" type="button" aria-label="Udostępnij listę z ${fmtDate(date)}">${icoShare}</button>` : ''}
-          </div>
-        </div>
-        <ul class="items">
-          ${items.map((e) => `<li><button class="item" type="button" data-id="${e.id}">
-            <span class="item-name">${q ? highlight(e.name, searchInput.value) : esc(e.name)}</span>
-            <span class="item-qty">${fmtQty(e.qty)} <small>${esc(e.unit)}</small></span>${chev}
-          </button></li>`).join('')}
-        </ul>
-      </section>`;
+        <div class="lday${open ? ' open' : ''}">
+          <button class="lday-head" type="button" data-toggle="${date}" aria-expanded="${open}">
+            <div class="lday-main">
+              <div class="lday-date">${fmtDate(date)} <span>· ${dayName(date)}</span></div>
+              <div class="lday-sub">${sub}</div>
+            </div>
+            <span class="badge" aria-label="${pozycji(items.length)}">${items.length}</span>
+            ${chevDown}
+          </button>
+          ${open ? `<div class="lday-body">
+            <div class="lday-actions">${actionsHTML(date)}</div>
+            ${itemsHTML(items, searchInput.value, hits)}
+          </div>` : ''}
+        </div>`;
     }
+    if (month) html += '</div>';
     if (!q && dates.length > daysShown) {
-      html += `<button class="more" id="moreBtn" type="button">Pokaż starsze dni (${dates.length - daysShown})</button>`;
+      html += `<button class="more" id="moreBtn" type="button">Pokaż starsze (${dates.length - daysShown})</button>`;
     }
-    listEl.innerHTML = html;
+    archiveEl.innerHTML = html;
   }
 
-  searchInput.addEventListener('input', render);
-  searchClear.addEventListener('click', () => { searchInput.value = ''; render(); searchInput.focus(); });
+  searchInput.addEventListener('input', renderLists);
+  searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') searchInput.blur(); });
+  searchClear.addEventListener('click', () => { searchInput.value = ''; renderLists(); searchInput.focus(); });
+
+  // ---------- Zakładki ----------
+  let tab = 'today';
+  function paintHeader() {
+    if (tab === 'today') {
+      $('pageTitle').textContent = 'Przyjęcia towaru';
+      $('pageSub').textContent = cap(new Date().toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }));
+    } else {
+      const n = new Set(state.entries.map((e) => e.date).filter((d) => d !== todayISO())).size;
+      $('pageTitle').textContent = 'Listy';
+      $('pageSub').textContent = n ? `${n} ${plural(n, 'lista', 'listy', 'list')} z poprzednich dni` : 'Archiwum przyjęć';
+    }
+  }
+  function switchTab(name) {
+    if (name === tab) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    tab = name;
+    $('tabToday').hidden = name !== 'today';
+    $('tabLists').hidden = name !== 'lists';
+    $('tabBtnToday').setAttribute('aria-selected', String(name === 'today'));
+    $('tabBtnLists').setAttribute('aria-selected', String(name === 'lists'));
+    hideSuggestions();
+    if (document.activeElement) document.activeElement.blur();
+    paintHeader();
+    window.scrollTo(0, 0);
+  }
+  document.querySelector('.tabbar').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-tab]');
+    if (b) switchTab(b.dataset.tab);
+  });
+
+  function render() { paintHeader(); renderToday(); renderLists(); }
 
   // ---------- Kopiowanie na Slacka ----------
   function slackText(date) {
     const items = entriesOfDay(date);
     return `Przyjęty towar z dnia: ${fmtDate(date)}\n\n` +
-      items.map((e) => `• ${e.name} – ${fmtQty(e.qty)} ${e.unit}`).join('\n');
+      items.map((e) => `• ${e.name}${qtyText(e) ? ' – ' + qtyText(e) : ''}`).join('\n');
   }
   async function copyText(text) {
     try {
@@ -595,15 +750,16 @@
   }
   function markCopied(date) { state.copied[date] = { at: Date.now(), text: slackText(date) }; save(); }
 
-  listEl.addEventListener('click', async (e) => {
+  document.querySelector('.wrap').addEventListener('click', async (e) => {
     const copyBtn = e.target.closest('[data-copy]');
     if (copyBtn) {
       const date = copyBtn.dataset.copy;
       if (await copyText(slackText(date))) {
         markCopied(date);
         render();
-        const b = listEl.querySelector(`[data-copy="${date}"]`);
-        if (b) { b.classList.add('done'); b.querySelector('span').textContent = 'Skopiowano'; }
+        document.querySelectorAll(`[data-copy="${date}"]`).forEach((b) => {
+          b.classList.add('done'); b.querySelector('span').textContent = 'Skopiowano';
+        });
         toast('Skopiowano – wklej w Slacku');
       } else {
         toast('Nie udało się skopiować');
@@ -620,7 +776,15 @@
       } catch (err) { /* anulowano */ }
       return;
     }
-    if (e.target.closest('#moreBtn')) { daysShown += DAYS_STEP; render(); return; }
+    const tog = e.target.closest('[data-toggle]');
+    if (tog) {
+      if (norm(searchInput.value)) return;          // w wynikach wyszukiwania listy są zawsze otwarte
+      const d = tog.dataset.toggle;
+      if (openDays.has(d)) openDays.delete(d); else openDays.add(d);
+      renderLists();
+      return;
+    }
+    if (e.target.closest('#moreBtn')) { daysShown += DAYS_STEP; renderLists(); return; }
     const item = e.target.closest('[data-id]');
     if (item) openEdit(item.dataset.id);
   });
@@ -640,7 +804,7 @@
 
   // ---------- Edycja ----------
   const editOv = $('editOverlay'), editName = $('editName'), editQty = $('editQty'), editDate = $('editDate');
-  let editId = null, editUnit = 'szt.';
+  let editId = null, editUnit = '';
   const paintEditUnit = buildSeg($('editUnitSeg'), (u) => { editUnit = u; paintEditUnit(u); });
 
   function openEdit(id) {
@@ -649,28 +813,25 @@
     editId = id;
     editName.value = e.name;
     editQty.value = fmtQty(e.qty);
-    editUnit = e.unit;
+    editUnit = e.unit || '';
     paintEditUnit(editUnit);
     editDate.value = e.date;
     [editName, editQty].forEach((el) => el.classList.remove('invalid'));
     openSheet(editOv);
   }
-  editQty.addEventListener('input', () => {
-    let v = editQty.value.replace('.', ',').replace(/[^\d,]/g, '');
-    const i = v.indexOf(',');
-    if (i >= 0) v = v.slice(0, i + 1) + v.slice(i + 1).replace(/,/g, '');
-    if (v !== editQty.value) editQty.value = v;
-  });
+  editQty.addEventListener('input', () => { editQty.classList.remove('invalid'); sanitizeQty(editQty); });
   $('editCancel').addEventListener('click', () => closeSheet(editOv));
   $('editSave').addEventListener('click', () => {
     const e = state.entries.find((x) => x.id === editId);
     if (!e) return closeSheet(editOv);
     const name = editName.value.trim().replace(/\s+/g, ' ');
-    const qty = parseQty(editQty.value);
     if (!name) { invalid(editName); return; }
-    if (qty === null) { invalid(editQty); return; }
-    Object.assign(e, { name, qty, unit: editUnit, date: /^\d{4}-\d{2}-\d{2}$/.test(editDate.value) ? editDate.value : e.date, updated: Date.now() });
-    remember(name, editUnit, false);
+    const qty = readQty(editQty, editUnit);
+    if (qty === undefined) return;
+    const unit = qty === null ? '' : editUnit;
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(editDate.value) ? editDate.value : e.date;
+    Object.assign(e, { name, qty, unit, date, updated: Date.now() });
+    remember(name, unit, false);
     save();
     closeSheet(editOv);
     render();
@@ -679,7 +840,8 @@
   $('editDelete').addEventListener('click', () => {
     const e = state.entries.find((x) => x.id === editId);
     if (!e) return closeSheet(editOv);
-    if (!confirm(`Usunąć „${e.name}” (${fmtQty(e.qty)} ${e.unit})?`)) return;
+    const q = qtyText(e);
+    if (!confirm(`Usunąć „${e.name}”${q ? ` (${q})` : ''}?`)) return;
     state.entries = state.entries.filter((x) => x.id !== editId);
     save();
     closeSheet(editOv);
@@ -697,7 +859,7 @@
   $('menuClose').addEventListener('click', () => closeSheet(menuOv));
 
   $('exportBtn').addEventListener('click', async () => {
-    const json = JSON.stringify({ app: 'przyjecia', version: 1, exported: new Date().toISOString(), ...state }, null, 1);
+    const json = JSON.stringify({ app: 'przyjecia', version: 2, exported: new Date().toISOString(), ...state }, null, 1);
     const fname = `przyjecia-kopia-${todayISO()}.json`;
     try {
       const file = new File([json], fname, { type: 'application/json' });
@@ -724,15 +886,16 @@
       const data = JSON.parse(await f.text());
       if (!data || !Array.isArray(data.entries)) throw new Error('format');
       const have = new Set(state.entries.map((e) => e.id));
-      const fresh = data.entries.filter((e) => e && e.id && !have.has(e.id) && e.name && e.date && parseQty(e.qty) !== null && UNITS.includes(e.unit));
-      if (!confirm(`W pliku: ${data.entries.length} pozycji, nowych: ${fresh.length}.\nDołączyć je do listy?`)) return;
+      const fresh = data.entries.filter((e) => e && e.id && !have.has(e.id) && e.name && /^\d{4}-\d{2}-\d{2}$/.test(e.date) &&
+        (e.qty === null || e.qty === undefined || parseQty(e.qty) !== null) && UNIT_OPTS.includes(e.unit || ''));
+      if (!confirm(`W pliku: ${data.entries.length} pozycji, nowych: ${fresh.length}.\nDołączyć je do list?`)) return;
       state.entries.push(...fresh);
       for (const [k, d] of Object.entries(data.dict || {})) {
         const cur = state.dict[k];
         if (!cur || (d.count || 0) > (cur.count || 0)) state.dict[k] = d;
       }
-      for (const [date, ts] of Object.entries(data.copied || {})) {
-        if (!state.copied[date]) state.copied[date] = ts;
+      for (const [date, c] of Object.entries(data.copied || {})) {
+        if (!state.copied[date] && c && c.at) state.copied[date] = c;
       }
       save();
       render();
@@ -753,22 +916,30 @@
     toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
   }
 
-  // ---------- Start ----------
-  function paintToday() {
-    const s = new Date().toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-    $('todayLabel').textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  // ---------- Przejście na nowy dzień ----------
+  // O północy dzisiejsza lista przenosi się do zakładki „Listy”.
+  let shownDay = todayISO();
+  function checkDay() {
+    if (todayISO() !== shownDay) { shownDay = todayISO(); render(); }
   }
-  paintToday();
+  function scheduleMidnight() {
+    const now = new Date();
+    const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 1);
+    setTimeout(() => { checkDay(); scheduleMidnight(); }, next - now);
+  }
+  scheduleMidnight();
+  setInterval(checkDay, 60 * 1000);                      // zabezpieczenie, gdy telefon „uśpi” licznik
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkDay(); });
+
+  // ---------- Start ----------
   render();
-  // po powrocie do aplikacji następnego dnia odśwież daty
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) { paintToday(); render(); } });
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
 
   // do testów
-  window.__przyjecia = { slackText, get state() { return state; } };
+  window.__przyjecia = { slackText, render, get state() { return state; } };
 })();
 </script>
 </body>

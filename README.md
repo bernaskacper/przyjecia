@@ -2,22 +2,28 @@
 
 Prosta aplikacja (PWA) na iPhone'a do rejestrowania towaru przychodzącego do firmy.
 
-- dodawanie pozycji: nazwa, ilość (klawiatura numeryczna), jednostka **szt. / mb / kpl.**
-- data odbioru uzupełnia się automatycznie (można ją zmienić w edycji)
-- podpowiedzi nazw z pamięci aplikacji – najczęściej używane na górze, jednostka dobiera się sama
-- wyszukiwanie pozycji po nazwie (bez względu na polskie znaki i wielkość liter)
-- edycja i usuwanie pozycji (dotknij pozycji na liście)
-- przycisk **Kopiuj** przy każdym dniu – gotowy tekst do wklejenia w Slacku:
+**Zakładka „Dziś”**
+- dodawanie pozycji: nazwa, ilość (opcjonalnie, klawiatura numeryczna), jednostka **brak / szt. / mb / kpl.**
+- data odbioru uzupełnia się automatycznie
+- podpowiedzi nazw pojawiają się dopiero podczas pisania; po wyborze jednostka ustawia się sama
+- pod formularzem tylko dzisiejsza lista z przyciskiem **Kopiuj** (gotowy tekst do Slacka):
 
   ```
-  Przyjęty towar z dnia: 21.10.2026
+  Przyjęty towar z dnia: 28.10.2026
 
   • Śruby M8 ocynk – 150 szt.
-  • Rura stalowa 40x40 – 6,5 mb
+  • Karton z folią – 3
+  • Paleta zwrotna
   ```
-- znacznik „✓ skopiowano” oraz ostrzeżenie, gdy lista dnia zmieniła się po skopiowaniu
-- działa bez internetu; dane zapisują się tylko na telefonie
-- kopia zapasowa danych (menu ⋯)
+
+**Zakładka „Listy”**
+- listy z poprzednich dni, pogrupowane po miesiącach i zwinięte – dotknij daty, aby rozwinąć
+- dzisiejsza lista przenosi się tutaj automatycznie o północy
+- wyszukiwarka: wpisz frazę, a aplikacja pokaże, w których listach (datach) występuje towar, z podświetlonymi pozycjami
+- przy każdej liście: Kopiuj / Udostępnij, znacznik „✓ skopiowano” i ostrzeżenie o zmianach po skopiowaniu
+
+Dotknięcie pozycji otwiera edycję (nazwa, ilość, jednostka, data) i usuwanie.
+Dane zapisują się tylko na telefonie; kopia zapasowa w menu ⋯. Aplikacja działa bez internetu.
 
 ## Pliki
 
@@ -30,20 +36,19 @@ Prosta aplikacja (PWA) na iPhone'a do rejestrowania towaru przychodzącego do fi
 
 ## Publikacja na GitHub Pages
 
-1. Na github.com kliknij **+** (prawy górny róg) → **New repository**.
-2. Nazwa, np. `przyjecia`, zaznacz **Public**, kliknij **Create repository**.
-3. Na stronie nowego repozytorium kliknij link **uploading an existing file**.
-4. Przeciągnij pliki `index.html`, `manifest.webmanifest`, `sw.js`, `README.md` **oraz cały folder `icons`** → **Commit changes**.
-5. **Settings** → **Pages** → w „Branch” wybierz `main` i `/ (root)` → **Save**.
-6. Po 1–2 minutach aplikacja jest pod adresem `https://TWOJA-NAZWA.github.io/przyjecia/`.
+1. W repozytorium kliknij **Add file** → **Upload files** (przy pustym repo: link **uploading an existing file**).
+2. Przeciągnij **zawartość** folderu (pliki i folder `icons`, nie sam folder nadrzędny) → **Commit changes**.
+3. **Settings** → **Pages** → Branch `main`, `/ (root)` → **Save**.
+4. Po 1–2 minutach aplikacja działa pod adresem `https://bernaskacper.github.io/przyjecia/`.
 
 ## Instalacja na iPhonie
 
-1. Otwórz adres w **Safari**.
-2. **Udostępnij** → **Do ekranu początkowego** → **Dodaj**.
-3. Uruchamiaj aplikację zawsze z ikony na ekranie (dane w Safari i w aplikacji z ikony są osobne).
+Otwórz adres w **Safari** → **Udostępnij** → **Do ekranu początkowego**.
+Uruchamiaj aplikację zawsze z ikony (dane w Safari i w aplikacji z ikony są osobne).
 
 ## Aktualizacja aplikacji
 
-Po wgraniu zmienionych plików podnieś numer wersji w pierwszej linii `sw.js`
-(`przyjecia-v1` → `przyjecia-v2`). Nowa wersja pojawi się na telefonie po drugim uruchomieniu aplikacji.
+1. Wgraj nowe pliki tak samo (Add file → Upload files) – GitHub zastąpi stare.
+2. Przed wgraniem podnieś numer wersji w `sw.js` (`przyjecia-v2` → `przyjecia-v3`).
+3. Na telefonie nowa wersja pojawi się po drugim uruchomieniu aplikacji (pierwsze pobiera ją w tle).
+   Dane zostają.

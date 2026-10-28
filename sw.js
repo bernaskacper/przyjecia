@@ -1,6 +1,6 @@
 // Service worker: aplikacja działa offline.
 // Po każdej zmianie plików aplikacji podnieś numer wersji, aby telefon pobrał nowe pliki.
-const CACHE = 'przyjecia-v1';
+const CACHE = 'przyjecia-v2';
 const ASSETS = [
   './',
   './index.html',
